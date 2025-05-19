@@ -1,0 +1,289 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام إدارة الصادر والوارد - تسجيل الدخول</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Add your styling here - keeping the same styling as your existing app */
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #1A1F2C;
+      color: white;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      direction: rtl;
+    }
+    
+    .card {
+      background-color: #221F26;
+      border: 1px solid #3A3A3C;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      padding: 1.5rem;
+    }
+    
+    .logo {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    
+    .logo img {
+      height: 60px;
+      width: auto;
+    }
+    
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .description {
+      color: #AAAAAA;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      background-color: #2A2D3A;
+      border: 1px solid #3A3A3C;
+      border-radius: 4px;
+      color: white;
+      box-sizing: border-box;
+    }
+    
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #D4AF37;
+      color: black;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+    }
+    
+    button:hover {
+      background-color: #BF9F30;
+    }
+    
+    .error-message {
+      color: #ff4d4f;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      text-align: center;
+      min-height: 1.5rem;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .loading {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .toggle-password {
+      position: absolute;
+      left: 10px;
+      top: 32px;
+      background: none;
+      border: none;
+      color: #AAAAAA;
+      cursor: pointer;
+      width: auto;
+      padding: 0;
+    }
+    
+    .toggle-password:hover {
+      color: white;
+      background: none;
+    }
+    
+    .remember-password {
+      display: flex;
+      align-items: center;
+      margin: 1rem 0;
+    }
+    
+    .remember-password input[type="checkbox"] {
+      width: auto;
+      margin-left: 0.5rem;
+    }
+    
+    .footer {
+      text-align: center;
+      color: #AAAAAA;
+      font-size: 0.7rem;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">
+      <!-- Golden logo placeholder - replace with actual logo if available -->
+      <div style="font-size: 2rem; color: #D4AF37;">
+        <span style="font-size: 2.5rem;">✦</span>
+      </div>
+    </div>
+    <h1>نظام إدارة الصادر والوارد</h1>
+    <div class="description">الرجاء تسجيل الدخول للوصول إلى النظام</div>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">اسم المستخدم</label>
+        <input type="text" id="username" name="username" required dir="rtl">
+      </div>
+      
+      <div class="form-group">
+        <label for="password">كلمة المرور</label>
+        <input type="password" id="password" name="password" required dir="rtl">
+        <button type="button" id="togglePassword" class="toggle-password">👁️</button>
+      </div>
+      
+      <div class="remember-password">
+        <input type="checkbox" id="rememberPassword" name="rememberPassword">
+        <label for="rememberPassword">تذكر بيانات الدخول</label>
+      </div>
+      
+      <div class="error-message" id="errorMessage"></div>
+      
+      <button type="submit" id="loginButton">تسجيل الدخول</button>
+    </form>
+  </div>
+  
+  <div class="footer">
+    <p>© <span id="currentYear"></span> All Rights Reserved | Developed by Ghaith Boheme</p>
+    <p>Incoming & Outgoing Documents Management System v1.0</p>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginForm = document.getElementById('loginForm');
+      const loginButton = document.getElementById('loginButton');
+      const errorMessage = document.getElementById('errorMessage');
+      const usernameInput = document.getElementById('username');
+      const passwordInput = document.getElementById('password');
+      const togglePasswordButton = document.getElementById('togglePassword');
+      const rememberPasswordCheckbox = document.getElementById('rememberPassword');
+      const currentYearSpan = document.getElementById('currentYear');
+      
+      // Set current year
+      currentYearSpan.textContent = new Date().getFullYear();
+      
+      // Check for saved credentials
+      const savedUsername = localStorage.getItem('savedUsername');
+      const savedPassword = localStorage.getItem('savedPassword');
+      
+      if (savedUsername && savedPassword) {
+        usernameInput.value = savedUsername;
+        passwordInput.value = savedPassword;
+        rememberPasswordCheckbox.checked = true;
+      }
+      
+      // Focus on username field if empty, otherwise on password
+      if (!usernameInput.value) {
+        usernameInput.focus();
+      } else {
+        passwordInput.focus();
+      }
+      
+      // Toggle password visibility
+      togglePasswordButton.addEventListener('click', function() {
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          togglePasswordButton.textContent = '🔒';
+        } else {
+          passwordInput.type = 'password';
+          togglePasswordButton.textContent = '👁️';
+        }
+      });
+      
+      loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Clear previous error
+        errorMessage.textContent = '';
+        
+        // Get credentials
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+        
+        if (!username || !password) {
+          errorMessage.textContent = 'يرجى إدخال اسم المستخدم وكلمة المرور';
+          return;
+        }
+        
+        // Show loading state
+        loginButton.textContent = 'جاري التحميل...';
+        loginButton.classList.add('loading');
+        loginButton.disabled = true;
+        
+        // Save credentials if remember is checked
+        if (rememberPasswordCheckbox.checked) {
+          localStorage.setItem('savedUsername', username);
+          localStorage.setItem('savedPassword', password);
+        } else {
+          localStorage.removeItem('savedUsername');
+          localStorage.removeItem('savedPassword');
+        }
+        
+        // Call server-side function to authenticate
+        google.script.run
+          .withSuccessHandler(function(result) {
+            if (result.success) {
+              // Authentication successful
+              // Reload to the correct page based on role
+              window.top.location.href = google.script.host.origin + 
+                google.script.host.pathname; // This forces a clean GET request without parameters
+            } else {
+              // Authentication failed
+              errorMessage.textContent = result.message || 'فشل تسجيل الدخول. يرجى التحقق من اسم المستخدم وكلمة المرور';
+              loginButton.textContent = 'تسجيل الدخول';
+              loginButton.classList.remove('loading');
+              loginButton.disabled = false;
+            }
+          })
+          .withFailureHandler(function(error) {
+            console.error('Login error:', error);
+            errorMessage.textContent = 'حدث خطأ في النظام. يرجى المحاولة مرة أخرى لاحقًا.';
+            loginButton.textContent = 'تسجيل الدخول';
+            loginButton.classList.remove('loading');
+            loginButton.disabled = false;
+          })
+          .authenticateUser(username, password);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم المدير</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..900&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: #1A1F2C;
+      color: white;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      direction: rtl;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .header {
+      background-color: #221F26;
+      border-bottom: 1px solid #3A3A3C;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+    }
+    
+    .logo {
+      color: #D4AF37;
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+    }
+    
+    .user-name {
+      margin-left: 0.5rem;
+    }
+    
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #D4AF37;
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    .content {
+      padding: 2rem;
+      flex: 1;
+      transition: margin-right 0.3s ease;
+    }
+    
+    .title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #D4AF37;
+    }
+    
+    .button {
+      background-color: #D4AF37;
+      color: black;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+    }
+    
+    .button:hover {
+      background-color: #BF9F30;
+    }
+    
+    .logout-button {
+      background-color: transparent;
+      border: 1px solid #D4AF37;
+      color: #D4AF37;
+      margin-right: 0.5rem;
+    }
+    
+    .logout-button:hover {
+      background-color: rgba(212, 175, 55, 0.1);
+    }
+    
+    .dashboard-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    
+    .card {
+      background-color: #221F26;
+      border: 1px solid #3A3A3C;
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+    
+    .card-title {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .card-value {
+      font-size: 2rem;
+      color: #D4AF37;
+      font-weight: bold;
+    }
+    
+    /* Sidebar styles */
+    .main-container {
+      display: flex;
+      flex: 1;
+    }
+    
+    .sidebar {
+      background-color: #221F26;
+      border-left: 1px solid #3A3A3C;
+      width: 250px;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      right: 0;
+      padding-top: 70px;
+      z-index: 5;
+      transition: transform 0.3s ease;
+    }
+    
+    .sidebar.collapsed {
+      transform: translateX(250px);
+    }
+    
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      color: white;
+      text-decoration: none;
+      transition: background-color 0.2s;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    
+    .menu-item:hover {
+      background-color: #2A2D3A;
+    }
+    
+    .menu-item.active {
+      background-color: #D4AF37;
+      color: black;
+    }
+    
+    .menu-icon {
+      font-size: 1.2rem;
+      margin-left: 0.5rem;
+      width: 24px;
+      text-align: center;
+      color: #D4AF37;
+    }
+    
+    .active .menu-icon {
+      color: black;
+    }
+    
+    .content-container {
+      flex: 1;
+      transition: margin-right 0.3s ease;
+      margin-right: 250px;
+    }
+    
+    .content-container.sidebar-collapsed {
+      margin-right: 0;
+    }
+    
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: #D4AF37;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      margin-left: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+    }
+    
+    .menu-toggle:hover {
+      background-color: #2A2D3A;
+      color: white;
+    }
+    
+    .menu-toggle-icon {
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 4;
+      display: none;
+    }
+    
+    .sidebar-overlay.active {
+      display: block;
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(250px);
+        width: 250px;
+      }
+      
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      
+      .content-container {
+        margin-right: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle Sidebar">
+        <span class="menu-toggle-icon">☰</span>
+      </button>
+      نظام إدارة الوثائق
+    </div>
+    <div class="user-info">
+      <button class="button logout-button" id="logoutButton">تسجيل الخروج</button>
+      <div class="user-name" id="userFullName">-</div>
+      <div class="avatar" id="userAvatar">-</div>
+    </div>
+  </div>
+  
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  
+  <div class="main-container">
+    <div class="sidebar" id="sidebar">
+      <a href="#" class="menu-item active">
+        <span class="menu-icon">📊</span>
+        <span class="menu-text">لوحة التحكم</span>
+      </a>
+      <a href="#" class="menu-item">
+        <span class="menu-icon">📥</span>
+        <span class="menu-text">الوثائق الواردة</span>
+      </a>
+      <a href="#" class="menu-item">
+        <span class="menu-icon">📤</span>
+        <span class="menu-text">الوثائق الصادرة</span>
+      </a>
+      <a href="#" class="menu-item">
+        <span class="menu-icon">👥</span>
+        <span class="menu-text">إدارة المستخدمين</span>
+      </a>
+      <a href="#" class="menu-item">
+        <span class="menu-icon">⚙️</span>
+        <span class="menu-text">إعدادات النظام</span>
+      </a>
+      <a href="#" class="menu-item" id="sidebarLogout">
+        <span class="menu-icon">🚪</span>
+        <span class="menu-text">تسجيل الخروج</span>
+      </a>
+    </div>
+    
+    <div class="content-container" id="contentContainer">
+      <div class="content">
+        <div class="title">لوحة تحكم المدير</div>
+        
+        <div class="dashboard-cards">
+          <div class="card">
+            <div class="card-title">عدد الوثائق</div>
+            <div class="card-value">0</div>
+          </div>
+          <div class="card">
+            <div class="card-title">المستخدمين</div>
+            <div class="card-value" id="usersCount">0</div>
+          </div>
+          <div class="card">
+            <div class="card-title">الوثائق الجديدة</div>
+            <div class="card-value">0</div>
+          </div>
+        </div>
+        
+        <!-- إضافة قسم لتغيير اسم المدير -->
+        <div class="admin-settings" style="margin-top: 2rem;" id="adminSettings">
+          <div class="title">إعدادات المدير</div>
+          
+          <div class="card" style="margin-top: 1rem;">
+            <div class="card-title">تغيير اسم المدير</div>
+            <div style="margin-top: 0.5rem;">
+              <p>الاسم الحالي: <span id="currentAdminName">مدير النظام</span></p>
+            </div>
+            <div style="margin-top: 1rem;">
+              <input type="text" id="newAdminName" placeholder="الاسم الجديد" 
+                style="background-color: #2A2D3A; border: 1px solid #3A3A3C; padding: 0.5rem; color: white; border-radius: 4px; width: 100%;">
+            </div>
+            <div style="margin-top: 1rem; display: flex; gap: 8px;">
+              <button id="changeAdminNameBtn" class="button">حفظ التغييرات</button>
+              <div id="changeNameStatus" style="display: none; align-items: center; margin-right: 8px; color: #D4AF37;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const userFullName = document.getElementById('userFullName');
+      const userAvatar = document.getElementById('userAvatar');
+      const logoutButton = document.getElementById('logoutButton');
+      const sidebarLogout = document.getElementById('sidebarLogout');
+      const menuToggle = document.getElementById('menuToggle');
+      const sidebar = document.getElementById('sidebar');
+      const contentContainer = document.getElementById('contentContainer');
+      const menuToggleIcon = document.querySelector('.menu-toggle-icon');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      const usersCountElement = document.getElementById('usersCount');
+      const adminSettings = document.getElementById('adminSettings');
+      const currentAdminName = document.getElementById('currentAdminName');
+      const newAdminNameInput = document.getElementById('newAdminName');
+      const changeAdminNameBtn = document.getElementById('changeAdminNameBtn');
+      const changeNameStatus = document.getElementById('changeNameStatus');
+      
+      // سجل المستخدمين
+      let users = JSON.parse(localStorage.getItem('app-users')) || [
+        { 
+          username: "admin", 
+          fullName: "مدير النظام", 
+          role: "admin", 
+          passwordHash: "hashed_admin123",
+          permissions: ["create_user", "edit_user", "delete_user", "view_documents", "edit_documents"]
+        },
+        { 
+          username: "user", 
+          fullName: "مستخدم النظام", 
+          role: "user", 
+          passwordHash: "hashed_user123",
+          permissions: ["view_documents"]
+        }
+      ];
+      
+      // تحديث عدد المستخدمين
+      if (usersCountElement) {
+        usersCountElement.textContent = users.length.toString();
+      }
+      
+      // عرض اسم المدير الحالي
+      const adminUser = users.find(user => user.username === 'admin');
+      if (adminUser && currentAdminName) {
+        currentAdminName.textContent = adminUser.fullName;
+      }
+
+      // تحديث معلومات المستخدم الحالي
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+      if (currentUser && userFullName) {
+        userFullName.textContent = currentUser.fullName || 'مستخدم';
+        if (userAvatar) {
+          userAvatar.textContent = (currentUser.fullName || 'م').charAt(0);
+        }
+      }
+      
+      // تغيير اسم المدير
+      if (changeAdminNameBtn) {
+        changeAdminNameBtn.addEventListener('click', function() {
+          const newName = newAdminNameInput.value.trim();
+          if (!newName) return;
+          
+          // عرض مؤشر التحميل
+          changeNameStatus.innerHTML = '<div style="width:18px;height:18px;border:2px solid #D4AF37;border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;"></div>';
+          changeNameStatus.style.display = 'flex';
+          
+          // وضع تأخير صغير لمحاكاة العملية
+          setTimeout(() => {
+            try {
+              // تحديث السجل المحلي
+              const updatedUsers = users.map(user => {
+                if (user.username === 'admin') {
+                  return { ...user, fullName: newName };
+                }
+                return user;
+              });
+              
+              // حفظ في التخزين المحلي
+              localStorage.setItem('app-users', JSON.stringify(updatedUsers));
+              users = updatedUsers;
+              
+              // تحديث واجهة المستخدم
+              if (currentAdminName) {
+                currentAdminName.textContent = newName;
+              }
+              
+              // تحديث المستخدم الحالي إذا كان المدير
+              if (currentUser && currentUser.username === 'admin') {
+                currentUser.fullName = newName;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                if (userFullName) userFullName.textContent = newName;
+                if (userAvatar) userAvatar.textContent = newName.charAt(0);
+              }
+              
+              // إعادة تعيين حقل الإدخال
+              newAdminNameInput.value = '';
+              
+              // عرض رسالة النجاح
+              changeNameStatus.innerHTML = '<span style="color:#4CAF50;">✓ تم التغيير بنجاح</span>';
+              
+              // إخفاء الرسالة بعد ثانيتين
+              setTimeout(() => {
+                changeNameStatus.style.display = 'none';
+              }, 2000);
+            } catch (error) {
+              // عرض رسالة الخطأ
+              changeNameStatus.innerHTML = '<span style="color:#F44336;">× حدث خطأ</span>';
+              
+              // إخفاء الرسالة بعد ثانيتين
+              setTimeout(() => {
+                changeNameStatus.style.display = 'none';
+              }, 2000);
+            }
+          }, 600);
+        });
+      }
+      
+      // check for user session changes (for example when the admin name is changed elsewhere)
+      window.addEventListener('storage', function(e) {
+        if (e.key === 'app-users') {
+          try {
+            const updatedUsers = JSON.parse(e.newValue || '[]');
+            users = updatedUsers;
+            
+            // update admin name
+            const adminUser = users.find(user => user.username === 'admin');
+            if (adminUser && currentAdminName) {
+              currentAdminName.textContent = adminUser.fullName;
+            }
+            
+            // update users count
+            if (usersCountElement) {
+              usersCountElement.textContent = users.length.toString();
+            }
+          } catch (error) {
+            console.error('Error parsing users from localStorage:', error);
+          }
+        }
+        
+        if (e.key === 'currentUser') {
+          try {
+            const updatedCurrentUser = JSON.parse(e.newValue || '{}');
+            
+            // update user display
+            if (updatedCurrentUser && userFullName) {
+              userFullName.textContent = updatedCurrentUser.fullName || 'مستخدم';
+              if (userAvatar) {
+                userAvatar.textContent = (updatedCurrentUser.fullName || 'م').charAt(0);
+              }
+            }
+          } catch (error) {
+            console.error('Error parsing current user from localStorage:', error);
+          }
+        }
+      });
+      
+      // Check localStorage for sidebar state
+      const isSidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+      
+      // Set initial state
+      if (isSidebarCollapsed) {
+        sidebar.classList.add('collapsed');
+        contentContainer.classList.add('sidebar-collapsed');
+      }
+
+      // Update icon based on sidebar state
+      const updateToggleIcon = function() {
+        const isCollapsed = sidebar.classList.contains('collapsed');
+        if (!isCollapsed) {
+          menuToggleIcon.textContent = '×';
+        } else {
+          menuToggleIcon.textContent = '☰';
+        }
+      };
+      
+      // Initialize icon state
+      updateToggleIcon();
+      
+      // Sidebar toggle functionality
+      const toggleSidebar = function() {
+        const isMobile = window.innerWidth <= 768;
+        
+        if (isMobile) {
+          sidebar.classList.toggle('active');
+          sidebarOverlay.classList.toggle('active');
+        } else {
+          sidebar.classList.toggle('collapsed');
+          contentContainer.classList.toggle('sidebar-collapsed');
+        }
+        
+        // Update the toggle icon
+        updateToggleIcon();
+        
+        // Save state to localStorage
+        const isCollapsed = sidebar.classList.contains('collapsed');
+        localStorage.setItem('sidebarCollapsed', isCollapsed);
+      };
+      
+      menuToggle.addEventListener('click', toggleSidebar);
+      sidebarOverlay.addEventListener('click', function() {
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('active');
+          sidebarOverlay.classList.remove('active');
+        }
+      });
+      
+      // Handle mobile view
+      const checkMobileView = function() {
+        if (window.innerWidth <= 768) {
+          if (!sidebar.classList.contains('active')) {
+            sidebar.classList.add('collapsed');
+            contentContainer.classList.add('sidebar-collapsed');
+          }
+        } else {
+          // If we're moving from mobile to desktop, reset to saved state
+          const savedState = localStorage.getItem('sidebarCollapsed') === 'true';
+          
+          if (savedState) {
+            sidebar.classList.add('collapsed');
+            contentContainer.classList.add('sidebar-collapsed');
+          } else {
+            sidebar.classList.remove('collapsed');
+            contentContainer.classList.remove('sidebar-collapsed');
+          }
+          
+          // Always remove mobile classes
+          sidebar.classList.remove('active');
+          sidebarOverlay.classList.remove('active');
+        }
+        
+        // Update the toggle icon
+        updateToggleIcon();
+      };
+      
+      // Check on load
+      checkMobileView();
+      
+      // Check on resize
+      window.addEventListener('resize', checkMobileView);
+      
+      // Get current user data from GAS server
+      if (typeof google !== 'undefined' && google.script) {
+        google.script.run
+          .withSuccessHandler(function(sessionData) {
+            if (sessionData && sessionData.user) {
+              userFullName.textContent = sessionData.user.fullName;
+              // Set avatar with first letter of name
+              const firstLetter = sessionData.user.fullName.charAt(0);
+              userAvatar.textContent = firstLetter;
+            } else {
+              // No valid session, redirect to login
+              window.top.location.href = google.script.host.origin + 
+                google.script.host.pathname;
+            }
+          })
+          .withFailureHandler(function(error) {
+            console.error('Error getting user session:', error);
+            // Redirect to login on error
+            window.top.location.href = google.script.host.origin + 
+              google.script.host.pathname;
+          })
+          .getUserSession();
+      }
+      
+      // Logout button handler - for both top and sidebar logout buttons
+      const handleLogout = function() {
+        if (typeof google !== 'undefined' && google.script) {
+          google.script.run
+            .withSuccessHandler(function() {
+              // Redirect to login page
+              window.top.location.href = google.script.host.origin + 
+                google.script.host.pathname + '?page=logout';
+            })
+            .clearUserSession();
+        } else {
+          // For standalone mode
+          localStorage.removeItem('currentUser');
+          window.location.href = '/login';
+        }
+      };
+      
+      logoutButton.addEventListener('click', handleLogout);
+      sidebarLogout.addEventListener('click', handleLogout);
+      
+      // Add animation styles for loading indicator
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `;
+      document.head.appendChild(style);
+    });
+  </script>
+</body>
+</html>
