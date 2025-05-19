@@ -1,73 +1,73 @@
-# Welcome to your Lovable project
+# Outgoing
 
-## Project info
+**Outgoing** is a fast, modern web app for managing incoming and outgoing documents (صادر ووارد). Built with Vite, TailwindCSS, and TypeScript, it’s ideal for administrative workflows, featuring a responsive UI, clean architecture, and ready-to-use SQL schema.
 
-**URL**: https://lovable.dev/projects/d35da9d1-8d27-4fc8-b2f4-9b4fcfd1e8f2
+---
 
-## How can I edit this code?
+## 🚀 Features
 
-There are several ways of editing your application.
+- Blazing-fast performance with Vite
+- Responsive UI using TailwindCSS
+- TypeScript support for maintainability
+- SQL schema for backend integration
+- Clean, modular codebase
+- Easily deployable to Netlify or shared hosting
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/d35da9d1-8d27-4fc8-b2f4-9b4fcfd1e8f2) and start prompting.
+## 🧰 Tech Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend**: Vite, TypeScript, TailwindCSS
+- **Tooling**: ESLint, PostCSS
+- **Database (optional)**: SQL schema (`/database/schema.sql`)
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 📦 Getting Started
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+git clone https://github.com/YOUR_USERNAME/outgoing.git
+cd outgoing
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🌐 Deployment
 
-**Use GitHub Codespaces**
+### Netlify
+- Build command: `npm run build`
+- Publish directory: `dist`
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Namecheap (cPanel)
+- Run `npm run build`
+- Upload `dist/` contents to `public_html/`
 
-## What technologies are used for this project?
+---
 
-This project is built with:
+## 📁 Project Structure
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+Outgoing/
+├── src/
+├── public/
+├── database/
+├── vite.config.ts
+├── tailwind.config.ts
+└── package.json
+```
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/d35da9d1-8d27-4fc8-b2f4-9b4fcfd1e8f2) and click on Share -> Publish.
+## 📇 Contact
 
-## Can I connect a custom domain to my Lovable project?
+**Developer**: Ghaith Boheme  
+📧 Email: Bigbait82@gmail.com  
+📱 Mobile: +9647816598807
 
-Yes, you can!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 📄 License
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This project is currently in private development. Please contact the author for reuse or collaboration.
